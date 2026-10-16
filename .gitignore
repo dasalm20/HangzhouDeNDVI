@@ -1,4 +1,4 @@
-# ---- Environments (platform specific, never share) ----
+﻿# ---- Environments (platform specific, never share) ----
 .venv/
 venv/
 env/
@@ -28,7 +28,7 @@ desktop.ini
 .vscode/
 .idea/
 .Rproj.user/
-.Rhistorygit remote -v
+.Rhistory
 
 # Google Drive shortcut stubs
 *.gdoc
