@@ -94,7 +94,7 @@ inside = geometry_mask(
     invert=True
 )
 
-print("Study area:", round(study_area.area / 1e6, 2), "km²")
+print("Study area:", round(study_area.area / 1e6, 2), "km2")
 print("Grid:", width, "x", height)
 print("Resolution:", resolution, "m")
 
@@ -108,26 +108,44 @@ print("Resolution:", resolution, "m")
 # convolution average neighbouring pixels and change them. Original values
 # must be preserved for the index calculations and the classification.
 #
+# The warp uses an explicit nodata sentinel rather than None. With
+# src_nodata=None, GDAL 3.12 fills the destination with its own validity
+# mask instead of the resampled values, which set every in-footprint pixel
+# to 1 and silently masked the whole scene. 65535 cannot occur in these
+# bands, so it is safe as a sentinel and is swapped back to fill_value
+# after the warp. Fill and saturation are still handled explicitly below.
+#
 # Reference: rasterio.warp.reproject
 # https://rasterio.readthedocs.io/en/stable/api/rasterio.warp.html
 
-def read_aligned(path):
+NODATA_SENTINEL = 65535
+
+
+def read_aligned(path, fill_value=0):
 
     with rasterio.open(path) as src:
+        source = src.read(1)
+        src_transform = src.transform
+        src_crs = src.crs
 
-        data = np.zeros((height, width), dtype="uint16")
+    data = np.full((height, width), NODATA_SENTINEL, dtype="uint16")
 
-        reproject(
-            source=rasterio.band(src, 1),
-            destination=data,
-            src_transform=src.transform,
-            src_crs=src.crs,
-            dst_transform=transform,
-            dst_crs=TARGET_CRS,
-            src_nodata=src.nodata,
-            dst_nodata=0,
-            resampling=Resampling.nearest
-        )
+    reproject(
+        source=source,
+        destination=data,
+        src_transform=src_transform,
+        src_crs=src_crs,
+        dst_transform=transform,
+        dst_crs=TARGET_CRS,
+        src_nodata=NODATA_SENTINEL,
+        dst_nodata=NODATA_SENTINEL,
+        resampling=Resampling.nearest
+    )
+
+    # Pixels outside the source footprint keep the sentinel. They become
+    # fill_value, which is 0 for every band here, so the explicit fill and
+    # saturation tests below drop them in the usual way.
+    data[data == NODATA_SENTINEL] = fill_value
 
     return data
 
@@ -248,7 +266,7 @@ for year in YEARS:
     water_area = water_valid.sum() * resolution ** 2 / 1e6
 
     print(f"Usable coverage: {coverage:.2f}%")
-    print(f"Water flagged: {round(water_area, 2)} km²")
+    print(f"Water flagged: {round(water_area, 2)} km2")
     print("Saved:", output.name)
 
 
@@ -273,7 +291,7 @@ with rasterio.open(
 
 common_area = common_land.sum() * resolution ** 2 / 1e6
 
-print("\nCommon land area:", round(common_area, 2), "km²")
+print("\nCommon land area:", round(common_area, 2), "km2")
 print(
     "Common land coverage:",
     f"{common_land.sum() / inside.sum() * 100:.2f}%"
