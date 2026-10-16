@@ -28,7 +28,8 @@ desktop.ini
 .vscode/
 .idea/
 .Rproj.user/
-.Rhistory
+.Rhistorygit remote -v
+
 # Google Drive shortcut stubs
 *.gdoc
 *.gsheet
