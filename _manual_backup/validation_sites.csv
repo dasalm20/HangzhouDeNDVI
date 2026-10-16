@@ -1,0 +1,12 @@
+id,category,longitude,latitude,ndvi_change_1995_2010,ndvi_change_2010_2025,ndbi_change_2010_2025,my_interpretation,confidence,reference_imagery,notes
+S01,Possible development,120.151339,30.44248,0.1965,-0.3706,0.2519,,,,
+S02,Possible development,120.506194,30.32771,0.1787,-0.4162,0.2526,,,,
+S03,Possible development,120.55837,30.14793,0.1551,-0.6463,0.3526,,,,
+S04,Vegetation increase,120.204157,30.353255,0.3475,-0.4053,0.2794,,,,
+S05,Vegetation increase,120.501131,30.121145,0.396,0.0301,0.0854,,,,
+S06,Vegetation increase,120.434727,30.028672,0.3125,-0.5441,0.1404,,,,
+S07,Ambiguous decrease,120.287764,30.500044,-0.0354,-0.5069,-0.0345,,,,
+S08,Ambiguous decrease,120.106088,30.378175,-0.1889,-0.3215,-0.2959,,,,
+S09,Ambiguous decrease,120.522561,30.284725,0.1114,-0.3396,-0.2796,,,,
+S10,Little change,120.430692,30.232623,-0.2511,0.0156,0.0088,,,,
+S11,Little change,120.32666,30.29981,-0.3284,0.011,0.018,,,,
